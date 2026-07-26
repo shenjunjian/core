@@ -72,18 +72,18 @@ flowchart TB
 
 ### 模块行数差异（CSR 相关 Top 项）
 
-| 官方模块 | RV 行数 | PV 行数 | 差距 | 优先级 |
-|---------|--------|--------|------|--------|
-| [`component.ts`](packages/runtime-vapor/src/component.ts) | 1332 | 624 | -708 | P1 |
-| [`componentSlots.ts`](packages/runtime-vapor/src/componentSlots.ts) | 433 | 164 | -269 | P0 |
-| [`slotFragment.ts`](packages/runtime-vapor/src/slotFragment.ts) | 315 | 0* | -315 | P0 |
-| [`slotBoundary.ts`](packages/runtime-vapor/src/slotBoundary.ts) | 89 | 0* | -89 | P0 |
-| [`apiCreateFor.ts`](packages/runtime-vapor/src/apiCreateFor.ts) | 803 | 496 | -307 | P1 |
-| [`Transition.ts`](packages/runtime-vapor/src/components/Transition.ts) | 872 | 571 | -301 | P1 |
-| [`apiCreateIf.ts`](packages/runtime-vapor/src/apiCreateIf.ts) | 129 | 50 | -79 | P1 |
-| [`apiTemplateRef.ts`](packages/runtime-vapor/src/apiTemplateRef.ts) | 365 | 203 | -162 | P0 |
-| [`block.ts`](packages/runtime-vapor/src/block.ts) | 380 | 253 | -127 | P1 |
-| [`prop.ts`](packages/runtime-vapor/src/dom/prop.ts) | 725 | 373 | -352 | P2 |
+| 官方模块                                                               | RV 行数 | PV 行数 | 差距 | 优先级 |
+| ---------------------------------------------------------------------- | ------- | ------- | ---- | ------ |
+| [`component.ts`](packages/runtime-vapor/src/component.ts)              | 1332    | 624     | -708 | P1     |
+| [`componentSlots.ts`](packages/runtime-vapor/src/componentSlots.ts)    | 433     | 164     | -269 | P0     |
+| [`slotFragment.ts`](packages/runtime-vapor/src/slotFragment.ts)        | 315     | 0\*     | -315 | P0     |
+| [`slotBoundary.ts`](packages/runtime-vapor/src/slotBoundary.ts)        | 89      | 0\*     | -89  | P0     |
+| [`apiCreateFor.ts`](packages/runtime-vapor/src/apiCreateFor.ts)        | 803     | 496     | -307 | P1     |
+| [`Transition.ts`](packages/runtime-vapor/src/components/Transition.ts) | 872     | 571     | -301 | P1     |
+| [`apiCreateIf.ts`](packages/runtime-vapor/src/apiCreateIf.ts)          | 129     | 50      | -79  | P1     |
+| [`apiTemplateRef.ts`](packages/runtime-vapor/src/apiTemplateRef.ts)    | 365     | 203     | -162 | P0     |
+| [`block.ts`](packages/runtime-vapor/src/block.ts)                      | 380     | 253     | -127 | P1     |
+| [`prop.ts`](packages/runtime-vapor/src/dom/prop.ts)                    | 725     | 373     | -352 | P2     |
 
 \* pure-vapor 将 slot 逻辑**部分合并**在 [`fragment.js`](packages/pure-vapor/src/vapor/fragment.js)，但与官方近期 refactor（#14984–#15044 slot boundary 链、validity 状态机）**未对齐**。
 
@@ -150,6 +150,7 @@ pure-vapor/src/vapor/<Module>.js   （或 internal/ 对应文件）
    - 建立 RV↔PV 文件对照清单（含 `slotBoundary`/`slotFragment` 需从 `fragment.js` **拆出**为独立模块，与官方结构对齐以便后续 diff）
 
 3. **跑通现有测试**
+
    ```bash
    vp run build pure-vapor
    vp run test pure-vapor
@@ -163,12 +164,12 @@ pure-vapor/src/vapor/<Module>.js   （或 internal/ 对应文件）
 
 ### 阶段 1：P0 — 编译器硬依赖（阻塞级）
 
-| 任务 | 源文件 | 目标 |
-|------|--------|------|
-| Template Ref API | [`apiTemplateRef.ts`](packages/runtime-vapor/src/apiTemplateRef.ts) | 补齐 `setStaticTemplateRef`、`setTemplateRefBinding`；[`index.js`](packages/pure-vapor/src/index.js) 导出 |
-| Slot 基础设施 | [`slotBoundary.ts`](packages/runtime-vapor/src/slotBoundary.ts) + [`slotFragment.ts`](packages/runtime-vapor/src/slotFragment.ts) | 新建 `vapor/slotBoundary.js`、`vapor/slotFragment.js`；从 [`fragment.js`](packages/pure-vapor/src/vapor/fragment.js) 迁出旧 `SlotFragment`，替换为官方状态机（**仅 vapor 路径，删 interop 三分支**） |
-| Slot 出口 | [`componentSlots.ts`](packages/runtime-vapor/src/componentSlots.ts) | 全量同步 `createSlot`、`withVaporCtx`、NON_STABLE / forwarded slot 逻辑 |
-| Block 辅助 | [`block.ts`](packages/runtime-vapor/src/block.ts) 中 `isValidSlot`、`trackSlotBoundaryDirtying` | 同步到 [`block.js`](packages/pure-vapor/src/vapor/block.js) |
+| 任务             | 源文件                                                                                                                            | 目标                                                                                                                                                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Template Ref API | [`apiTemplateRef.ts`](packages/runtime-vapor/src/apiTemplateRef.ts)                                                               | 补齐 `setStaticTemplateRef`、`setTemplateRefBinding`；[`index.js`](packages/pure-vapor/src/index.js) 导出                                                                                            |
+| Slot 基础设施    | [`slotBoundary.ts`](packages/runtime-vapor/src/slotBoundary.ts) + [`slotFragment.ts`](packages/runtime-vapor/src/slotFragment.ts) | 新建 `vapor/slotBoundary.js`、`vapor/slotFragment.js`；从 [`fragment.js`](packages/pure-vapor/src/vapor/fragment.js) 迁出旧 `SlotFragment`，替换为官方状态机（**仅 vapor 路径，删 interop 三分支**） |
+| Slot 出口        | [`componentSlots.ts`](packages/runtime-vapor/src/componentSlots.ts)                                                               | 全量同步 `createSlot`、`withVaporCtx`、NON_STABLE / forwarded slot 逻辑                                                                                                                              |
+| Block 辅助       | [`block.ts`](packages/runtime-vapor/src/block.ts) 中 `isValidSlot`、`trackSlotBoundaryDirtying`                                   | 同步到 [`block.js`](packages/pure-vapor/src/vapor/block.js)                                                                                                                                          |
 
 **验收**：移植 `templateRef.spec.ts` 中 CSR 用例；移植 `componentSlots.spec.ts` 子集（排除 hydration/interop describe 块）。
 
@@ -176,14 +177,14 @@ pure-vapor/src/vapor/<Module>.js   （或 internal/ 对应文件）
 
 ### 阶段 2：P1 — 控制流 + 组件核心
 
-| 任务 | 要点 |
-|------|------|
-| [`apiCreateIf.js`](packages/pure-vapor/src/vapor/apiCreateIf.js) | `SLOT_ROOT` → `DynamicFragment(..., trackSlotBoundary)`；`decodeIfShape`；删 hydration cursor |
-| [`apiCreateFor.js`](packages/pure-vapor/src/vapor/apiCreateFor.js) | `SLOT_ROOT`、`IS_FRAGMENT` 等 flag 解码；`createSelector` / `createForSlots` 对齐 |
-| [`apiCreateDynamicComponent.js`](packages/pure-vapor/src/vapor/apiCreateDynamicComponent.js) | `SLOT_ROOT`、KeepAlive 缓存 identity |
-| [`fragment.js`](packages/pure-vapor/src/vapor/fragment.js) | `DynamicFragment.update` 与 slot boundary dirty 通知；与 Transition/KeepAlive 集成 |
-| [`component.js`](packages/pure-vapor/src/vapor/component.js) | mount/update/unmount、attrs fallthrough、render effect 创建顺序（#14984）；KeepAlive context 从 owner 解析（#15023） |
-| [`renderEffect.js`](packages/pure-vapor/src/vapor/renderEffect.js) | 与 component 联动修复 |
+| 任务                                                                                         | 要点                                                                                                                 |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| [`apiCreateIf.js`](packages/pure-vapor/src/vapor/apiCreateIf.js)                             | `SLOT_ROOT` → `DynamicFragment(..., trackSlotBoundary)`；`decodeIfShape`；删 hydration cursor                        |
+| [`apiCreateFor.js`](packages/pure-vapor/src/vapor/apiCreateFor.js)                           | `SLOT_ROOT`、`IS_FRAGMENT` 等 flag 解码；`createSelector` / `createForSlots` 对齐                                    |
+| [`apiCreateDynamicComponent.js`](packages/pure-vapor/src/vapor/apiCreateDynamicComponent.js) | `SLOT_ROOT`、KeepAlive 缓存 identity                                                                                 |
+| [`fragment.js`](packages/pure-vapor/src/vapor/fragment.js)                                   | `DynamicFragment.update` 与 slot boundary dirty 通知；与 Transition/KeepAlive 集成                                   |
+| [`component.js`](packages/pure-vapor/src/vapor/component.js)                                 | mount/update/unmount、attrs fallthrough、render effect 创建顺序（#14984）；KeepAlive context 从 owner 解析（#15023） |
+| [`renderEffect.js`](packages/pure-vapor/src/vapor/renderEffect.js)                           | 与 component 联动修复                                                                                                |
 
 **验收**：移植 [`if.spec.ts`](packages/runtime-vapor/__tests__/if.spec.ts)、[`for.spec.ts`](packages/runtime-vapor/__tests__/for.spec.ts) 中 CSR + Transition/KeepAlive 用例；[`transition-vif.spec.js`](packages/pure-vapor/__tests__/transition-vif.spec.js) 扩展。
 
@@ -201,6 +202,7 @@ pure-vapor/src/vapor/<Module>.js   （或 internal/ 对应文件）
 **internal/** 对照：[`baseTransition.js`](packages/pure-vapor/src/internal/baseTransition.js)、[`transitionDom.js`](packages/pure-vapor/src/internal/transitionDom.js)、[`transitionRuntime.js`](packages/pure-vapor/src/internal/transitionRuntime.js) 与 runtime-dom VAPOR 段一致。
 
 **验收**：
+
 - 移植 `Transition.spec.ts` / `TransitionGroup.spec.ts` CSR 用例
 - 在 `packages-private/vapor-e2e-test/transition` 用 `vue: pure-vapor` alias 跑 vapor-only cases（跳过 interop 目录）
 
@@ -208,14 +210,14 @@ pure-vapor/src/vapor/<Module>.js   （或 internal/ 对应文件）
 
 ### 阶段 4：P2 — DOM 层与周边
 
-| 模块 | 说明 |
-|------|------|
-| [`dom/prop.js`](packages/pure-vapor/src/vapor/dom/prop.js) | setClass/setDynamicProps 等（-352 行差距） |
-| [`dom/event.js`](packages/pure-vapor/src/vapor/dom/event.js) | `eventDelegation` 默认 true 行为对齐 |
-| [`scopeId.js`](packages/pure-vapor/src/vapor/scopeId.js) | scoped CSS |
-| [`componentProps.js`](packages/pure-vapor/src/vapor/componentProps.js) | attrs/props 规范化 |
-| [`apiDefineComponent.js`](packages/pure-vapor/src/vapor/apiDefineComponent.js) | 与官方 defineVaporComponent 对齐（-212 行） |
-| [`apiDefineCustomElement.js`](packages/pure-vapor/src/vapor/apiDefineCustomElement.js) | CE 生命周期（无 SSR CE） |
+| 模块                                                                                   | 说明                                        |
+| -------------------------------------------------------------------------------------- | ------------------------------------------- |
+| [`dom/prop.js`](packages/pure-vapor/src/vapor/dom/prop.js)                             | setClass/setDynamicProps 等（-352 行差距）  |
+| [`dom/event.js`](packages/pure-vapor/src/vapor/dom/event.js)                           | `eventDelegation` 默认 true 行为对齐        |
+| [`scopeId.js`](packages/pure-vapor/src/vapor/scopeId.js)                               | scoped CSS                                  |
+| [`componentProps.js`](packages/pure-vapor/src/vapor/componentProps.js)                 | attrs/props 规范化                          |
+| [`apiDefineComponent.js`](packages/pure-vapor/src/vapor/apiDefineComponent.js)         | 与官方 defineVaporComponent 对齐（-212 行） |
+| [`apiDefineCustomElement.js`](packages/pure-vapor/src/vapor/apiDefineCustomElement.js) | CE 生命周期（无 SSR CE）                    |
 
 **验收**：移植 `prop.spec.ts`、`scopeId.spec.ts`、`customElement.spec.ts` 子集。
 
@@ -232,14 +234,14 @@ pure-vapor/src/vapor/<Module>.js   （或 internal/ 对应文件）
 
 ## 建议 PR 拆分
 
-| PR | 内容 | 风险 |
-|----|------|------|
-| PR-1 | 阶段 0 + template ref API + exports | 低 |
-| PR-2 | slotBoundary/slotFragment + componentSlots | 高（行为面最大） |
-| PR-3 | createIf/For/DynamicComponent + fragment/block | 高 |
-| PR-4 | component.js + renderEffect | 高 |
-| PR-5 | Transition/KeepAlive/Teleport（合入当前 WIP） | 中 |
-| PR-6 | DOM prop/event + 剩余测试移植 | 中 |
+| PR   | 内容                                           | 风险             |
+| ---- | ---------------------------------------------- | ---------------- |
+| PR-1 | 阶段 0 + template ref API + exports            | 低               |
+| PR-2 | slotBoundary/slotFragment + componentSlots     | 高（行为面最大） |
+| PR-3 | createIf/For/DynamicComponent + fragment/block | 高               |
+| PR-4 | component.js + renderEffect                    | 高               |
+| PR-5 | Transition/KeepAlive/Teleport（合入当前 WIP）  | 中               |
+| PR-6 | DOM prop/event + 剩余测试移植                  | 中               |
 
 每个 PR：`vp run build pure-vapor && vp run test pure-vapor`。
 
@@ -247,20 +249,20 @@ pure-vapor/src/vapor/<Module>.js   （或 internal/ 对应文件）
 
 ## 与现有 Plan 的关系
 
-| 文档 | 关系 |
-|------|------|
-| [Plan1 纯运行时](.cursor/plans/pure-vapor_纯运行时_8015eb3b.plan.md) | 架构/导出契约不变；本计划是 **upstream 行为追平** |
-| [Plan2 二期精简](.cursor/plans/pure-vapor_二期精简_bdd218a4.plan.md) | `app._Internal` 多 App 隔离可与 P1 并行，但不阻塞 slot 同步 |
-| [Plan3 不兼容清单](.cursor/plans/pure-vapor_不兼容清单_caf3e54a.plan.md) | 同步完成后更新「编译器陷阱」与「已实现」表 |
+| 文档                                                                     | 关系                                                        |
+| ------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| [Plan1 纯运行时](.cursor/plans/pure-vapor_纯运行时_8015eb3b.plan.md)     | 架构/导出契约不变；本计划是 **upstream 行为追平**           |
+| [Plan2 二期精简](.cursor/plans/pure-vapor_二期精简_bdd218a4.plan.md)     | `app._Internal` 多 App 隔离可与 P1 并行，但不阻塞 slot 同步 |
+| [Plan3 不兼容清单](.cursor/plans/pure-vapor_不兼容清单_caf3e54a.plan.md) | 同步完成后更新「编译器陷阱」与「已实现」表                  |
 
 ---
 
 ## 风险与缓解
 
-| 风险 | 缓解 |
-|------|------|
-| slot 状态机移植复杂 | 先移植官方测试再写代码；按 slotBoundary → slotFragment → componentSlots 顺序 |
-| hydration 分支误删 CSR 逻辑 | 移植时保留 `if (isHydrating)` 的 **else 分支**为默认路径 |
-| Transition WIP 与官方 diff 冲突 | 先 rebase 当前 Transition 改动到最新 runtime-vapor，再 diff |
-| internal/ 与 runtime-core 漂移 | 仅对 vapor 实际调用的 internal 模块做 targeted diff |
-| 测试量过大 | 按 describe 块裁剪 interop/hydration；优先 compiler 驱动测试（`compileToPureVaporRender`） |
+| 风险                            | 缓解                                                                                       |
+| ------------------------------- | ------------------------------------------------------------------------------------------ |
+| slot 状态机移植复杂             | 先移植官方测试再写代码；按 slotBoundary → slotFragment → componentSlots 顺序               |
+| hydration 分支误删 CSR 逻辑     | 移植时保留 `if (isHydrating)` 的 **else 分支**为默认路径                                   |
+| Transition WIP 与官方 diff 冲突 | 先 rebase 当前 Transition 改动到最新 runtime-vapor，再 diff                                |
+| internal/ 与 runtime-core 漂移  | 仅对 vapor 实际调用的 internal 模块做 targeted diff                                        |
+| 测试量过大                      | 按 describe 块裁剪 interop/hydration；优先 compiler 驱动测试（`compileToPureVaporRender`） |

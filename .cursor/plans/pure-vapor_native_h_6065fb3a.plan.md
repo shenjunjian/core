@@ -38,22 +38,26 @@ flowchart TD
 
 ## 设计决策（已选定）
 
-| 项 | 选择 |
-|----|------|
-| 返回类型 | Block（与其它 vapor helper 一致） |
-| 底层实现 | 复用 `createComponentWithFallback` |
+| 项         | 选择                                                         |
+| ---------- | ------------------------------------------------------------ |
+| 返回类型   | Block（与其它 vapor helper 一致）                            |
+| 底层实现   | 复用 `createComponentWithFallback`                           |
 | 响应式模型 | **getter / ref 驱动**（对齐编译器产物），不是整树重跑 render |
-| Fragment | 支持：`h(Fragment, ...)` 返回 `Block[]` |
-| VDOM 组件 | 不支持；DEV 下对非 vapor 组件告警 |
-| 导出名 | 公开导出 `h`；从 `EXCLUDED_EXPORTS` 移除 |
+| Fragment   | 支持：`h(Fragment, ...)` 返回 `Block[]`                      |
+| VDOM 组件  | 不支持；DEV 下对非 vapor 组件告警                            |
+| 导出名     | 公开导出 `h`；从 `EXCLUDED_EXPORTS` 移除                     |
 
 **响应式用法（与编译器一致）：**
 
 ```js
-const msg = ref('hi')
+const msg = ref("hi");
 // props / children 用 getter 或 ref，才能随数据更新
-h('div', { class: () => msg.value }, () => msg.value)
-h(Comp, { foo: () => msg.value }, { default: () => h('span', null, () => msg.value) })
+h("div", { class: () => msg.value }, () => msg.value);
+h(
+  Comp,
+  { foo: () => msg.value },
+  { default: () => h("span", null, () => msg.value) },
+);
 ```
 
 普通快照值（`h('div', { class: msg.value })`）只渲染一次——这与直接调用 `createPlainElement('div', { class: 'hi' })` 行为一致。

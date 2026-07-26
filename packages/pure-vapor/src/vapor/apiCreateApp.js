@@ -236,3 +236,9 @@ export function createVaporApp(rootComponent, rootProps = null) {
 
   return app
 }
+
+/**
+ * SSR stub: same App shape as createVaporApp (CSR mount).
+ * Real hydration is not implemented — client mount clears & remounts.
+ */
+export const createVaporSSRApp = createVaporApp

@@ -42,7 +42,7 @@
 ## 明确不同步
 
 - `vdomInterop.ts`、`dom/hydration.ts`、`hydrateFragment.ts`
-- `createVaporSSRApp`、Suspense、VDOM 互操作 slot 路径
+- 真 SSR/hydration（`createVaporSSRApp` 仅作 CSR stub）、Suspense、VDOM 互操作 slot 路径
 - `runtime-dom` / `runtime-core` 整包依赖
 
 ## pure-vapor 自有扩展（非 upstream）

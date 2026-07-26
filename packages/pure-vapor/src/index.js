@@ -86,9 +86,12 @@ export {
   onRenderTracked,
   onRenderTriggered,
   onErrorCaptured,
+  onServerPrefetch,
 } from './internal/lifecycle.js'
 
 export { provide, inject, hasInjectionContext } from './internal/apiInject.js'
+
+export { ssrContextKey, useSSRContext } from './internal/ssrStubs.js'
 
 export {
   useAttrs,
@@ -123,7 +126,7 @@ export { withModifiers, withKeys } from './internal/eventModifiers.js'
 // C. @vue/runtime-vapor — vapor runtime (minus exclusion table)
 // ---------------------------------------------------------------------------
 
-export { createVaporApp } from './vapor/apiCreateApp.js'
+export { createVaporApp, createVaporSSRApp } from './vapor/apiCreateApp.js'
 export { vaporInteropPlugin } from './vapor/vaporInteropPlugin.js'
 export { defineVaporComponent } from './vapor/apiDefineComponent.js'
 export { defineVaporAsyncComponent } from './vapor/apiDefineAsyncComponent.js'
@@ -218,7 +221,10 @@ export { isFragment, VaporFragment, DynamicFragment } from './vapor/fragment.js'
 // Migration aliases (vue → pure-vapor)
 // ---------------------------------------------------------------------------
 
-export { createVaporApp as createApp } from './vapor/apiCreateApp.js'
+export {
+  createVaporApp as createApp,
+  createVaporSSRApp as createSSRApp,
+} from './vapor/apiCreateApp.js'
 export { defineVaporComponent as defineComponent } from './vapor/apiDefineComponent.js'
 export { defineVaporAsyncComponent as defineAsyncComponent } from './vapor/apiDefineAsyncComponent.js'
 export { useVaporCssVars as useCssVars } from './vapor/helpers/useCssVars.js'

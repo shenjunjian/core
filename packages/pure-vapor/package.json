@@ -82,7 +82,6 @@
     "@vue/shared": "workspace:*",
     "@vue/reactivity": "workspace:*",
     "@vue/compiler-sfc": "workspace:*",
-    "@vue/server-renderer": "workspace:*",
     "@vue/runtime-dom": "workspace:*",
     "@vue/runtime-vapor": "workspace:*"
   },

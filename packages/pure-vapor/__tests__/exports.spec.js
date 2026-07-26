@@ -35,6 +35,12 @@ const REQUIRED_EXPORTS = [
   'vaporInteropPlugin',
   'h',
   'Fragment',
+  // SSR stubs (App shape / import surface only — no real SSR)
+  'createVaporSSRApp',
+  'createSSRApp',
+  'useSSRContext',
+  'ssrContextKey',
+  'onServerPrefetch',
 ]
 
 /** Excluded per pure-vapor export contract (index-with-vapor minus table) */
@@ -42,8 +48,6 @@ const EXCLUDED_EXPORTS = [
   'compile',
   'createVNode',
   'createApp', // VDOM — pure-vapor aliases createVaporApp instead; listed separately below
-  'createSSRApp',
-  'createVaporSSRApp',
   'Suspense',
   'hydrate',
   'Teleport',
@@ -62,7 +66,7 @@ describe('pure-vapor public exports', () => {
     }
   })
 
-  test('VDOM / SSR / interop / Transition symbols are not exported', () => {
+  test('VDOM / hydration / Transition symbols are not exported', () => {
     const excluded = EXCLUDED_EXPORTS.filter(name => name !== 'createApp')
     for (let i = 0; i < excluded.length; i++) {
       const name = excluded[i]
@@ -72,6 +76,11 @@ describe('pure-vapor public exports', () => {
 
   test('createApp is a migration alias for createVaporApp', () => {
     expect(pureVapor.createApp).toBe(pureVapor.createVaporApp)
+  })
+
+  test('createSSRApp / createVaporSSRApp are CSR stubs of createVaporApp', () => {
+    expect(pureVapor.createVaporSSRApp).toBe(pureVapor.createVaporApp)
+    expect(pureVapor.createSSRApp).toBe(pureVapor.createVaporSSRApp)
   })
 
   test('vaporInteropPlugin is a no-op stub that returns the app', () => {

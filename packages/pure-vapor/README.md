@@ -39,7 +39,7 @@ Vue 官方需要支持`VNode模式 + 混合模式 + Vapor模式`的一种理想�
 | ---- | ------------------------------------- | ----------------------------------------------------------------------- |
 | 简化 | 纯 JavaScript 开发                    | 便于学习，加快阅读速度，在发包前，补充官方的Ts 声明文件，不影响用户使用 |
 | 简化 | 移除了Vnode , vaporInteropPlugin 支持 | 简化逻辑与体积，便于学习                                                |
-| 简化 | 移除了 SSR/Hydration 代码             | 简化逻辑， 不支持 SSR等框架， **后期计划补充令其不报错**                |
+| 简化 | 移除了 SSR/Hydration 代码             | 无真 SSR/注水；导出 `createSSRApp` / `createVaporSSRApp` 与 `vue/server-renderer` **stub**（`renderToString` → `''`），便于 VitePress/Nuxt 等环境不报错，客户端按 CSR 挂载 |
 | 简化 | 移除了 Suspense                       | 实验特性，对 runtime 影响较多，**待官方稳定后，再补充**                 |
 | 增强 | 支持h 函数                            | 返回值是 **Block**（DOM / 组件实例 / Fragment），**不是** VNode         |
 | 增强 | getCurrentInstance()                  | 返回 Vapor Instance                                                     |
@@ -50,6 +50,7 @@ Vue 官方需要支持`VNode模式 + 混合模式 + Vapor模式`的一种理想�
 | 别名                   | 指向                        |
 | ---------------------- | --------------------------- |
 | `createApp`            | `createVaporApp`            |
+| `createSSRApp`         | `createVaporSSRApp`（= `createVaporApp`） |
 | `defineComponent`      | `defineVaporComponent`      |
 | `defineAsyncComponent` | `defineVaporAsyncComponent` |
 | `useCssVars`           | `useVaporCssVars`           |

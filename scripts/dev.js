@@ -37,7 +37,7 @@ const {
 })
 
 const format = rawFormat || 'global'
-const targets = positionals.length ? positionals : ['vue']
+const targets = positionals.length ? positionals : ['pure-vapor']
 
 const outputFormat = format.startsWith('global')
   ? 'iife'

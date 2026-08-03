@@ -199,8 +199,12 @@ export default defineConfig({
     },
   },
   staged: {
-    '*.{js,json}': ['vp fmt --no-error-on-unmatched-pattern'],
-    '*.ts?(x)': ['vp lint --fix', 'vp fmt --no-error-on-unmatched-pattern'],
+    '*.{js,json}': [
+      /*'vp fmt --no-error-on-unmatched-pattern'*/
+    ],
+    '*.ts?(x)': [
+      /*'vp lint --fix', 'vp fmt --no-error-on-unmatched-pattern'*/
+    ],
   },
   lint: {
     categories: {

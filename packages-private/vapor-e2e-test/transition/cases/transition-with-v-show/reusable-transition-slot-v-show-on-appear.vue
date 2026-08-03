@@ -21,9 +21,9 @@ const MyTransition = defineVaporComponent((props, { slots }) => {
       appearFromClass: () => 'test-appear-from',
       appearToClass: () => 'test-appear-to',
       appearActiveClass: () => 'test-appear-active',
-      onBeforeEnter: () => () => calls.push('beforeEnter'),
-      onEnter: () => () => calls.push('onEnter'),
-      onAfterEnter: () => () => calls.push('afterEnter'),
+      onBeforeEnter: () =>  () => calls.push('beforeEnter'),
+      onEnter: () =>  () => calls.push('onEnter'),
+      onAfterEnter: () =>  () => calls.push('afterEnter'),
     },
     slots,
   )
